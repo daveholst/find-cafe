@@ -1,13 +1,13 @@
-<script>
+<script lang="ts">
     import Map from "./Components/Map.svelte";
     export let ready;
+    import { googleMapsApiKey } from "../config.local";
+
+    let googleScriptSrc = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initMap&libraries=places`;
 </script>
 
 <svelte:head>
-    <script
-        defer
-        async
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCx8340Vz_qk5DTsW_0qV5TLctf-xl7DKI&callback=initMap&libraries=places">
+    <script defer async src={googleScriptSrc}>
     </script>
 </svelte:head>
 
