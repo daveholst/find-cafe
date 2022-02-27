@@ -13,9 +13,10 @@
 
     let friendsArray = [];
 
-    let friendsShape;
+    let centerPoint;
+    let service;
 
-    friendsShape = new google.maps.Polygon({
+    let friendsPolygon = new google.maps.Polygon({
         paths: friendsArray,
         strokeColor: "#FF0000",
         strokeOpacity: 0.8,
@@ -23,6 +24,36 @@
         fillColor: "#FF0000",
         fillOpacity: 0.35,
     });
+    function getCenter(points) {
+        let sumX = 0;
+        let sumY = 0;
+        for (let i = 0; i < points.length; i++) {
+            console.log("pointss", points[i]);
+            const { lat, lng } = points[i];
+            sumX += lat;
+            sumY += lng;
+        }
+        return { lat: sumX / points.length, lng: sumY / points.length };
+    }
+
+    function drawPolygon(pointsArray) {
+        if (pointsArray.length > 1) {
+            // wipe existing polygon
+            friendsPolygon.setMap(null);
+            // build polygon
+            friendsPolygon = new google.maps.Polygon({
+                paths: friendsArray,
+                strokeColor: "#FF0000",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#FF0000",
+                fillOpacity: 0.35,
+            });
+            // apply to map
+            friendsPolygon.setMap(map);
+            console.log("getCenter:: ", getCenter(friendsArray));
+        }
+    }
 
     function addMarker(location, map) {
         // Add the marker at the clicked location, and add the next-available label
@@ -33,21 +64,7 @@
             map: map,
         });
         friendsArray.push({ lat: location.lat(), lng: location.lng() });
-        if (friendsArray.length > 1) {
-            // whipe existing polygon
-            friendsShape.setMap(null);
-            // build polygon
-            friendsShape = new google.maps.Polygon({
-                paths: friendsArray,
-                strokeColor: "#FF0000",
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                fillColor: "#FF0000",
-                fillOpacity: 0.35,
-            });
-            // apply to map
-            friendsShape.setMap(map);
-        }
+
         console.log(friendsArray);
     }
 
@@ -58,6 +75,8 @@
             center,
             //   styles: mapStyles, // optional
         });
+        // cerate place lookup
+        service = new google.maps.places.PlacesService(map);
 
         new google.maps.Marker({
             position: wan,
@@ -68,9 +87,34 @@
         // marker.setMap(map);
         // This event listener calls addMarker() when the map is clicked.
 
-        google.maps.event.addListener(map, "click", (event) => {
+        google.maps.event.addListener(map, "click", async (event) => {
+            let cafeRequest = {
+                location: {},
+                // location: new google.maps.LatLng(centerPoint),
+                radius: "500",
+                type: ["restaurant"],
+            };
+
             console.log(event.latLng.lat());
             addMarker(event.latLng, map);
+            drawPolygon(friendsArray);
+            console.log("cent:: ", getCenter(friendsArray));
+            cafeRequest.location = await getCenter(friendsArray);
+            console.log("centerP:: ", centerPoint);
+            // dra  wCenter(getCenter(friendsArray));
+            console.log("cafe req::", cafeRequest);
+            service.nearbySearch(cafeRequest, function (results, status) {
+                console.log(status);
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    console.log(results);
+                    //  for (var i = 0; i < results.length; i++) {
+                    // createMarker(results[i]);
+                }
+                //   map.setCenter(results[0].geometry.location);
+                // }
+            });
+
+            // });
         });
     });
 </script>

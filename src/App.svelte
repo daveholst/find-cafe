@@ -3,7 +3,7 @@
     export let ready;
     import { googleMapsApiKey } from "../config.local";
 
-    let googleScriptSrc = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initMap&libraries=places`;
+    let googleScriptSrc = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initMap&libraries=places,geometry`;
 </script>
 
 <svelte:head>
