@@ -1,6 +1,8 @@
 <script>
     //   import mapStyles from "./map-styles"; // optional
     import { onMount } from "svelte";
+    import CafeList from "./CafeList.svelte";
+    import { SearchResultsStore } from "../Stores/SearchResults";
 
     let container;
     let map;
@@ -91,8 +93,8 @@
             let cafeRequest = {
                 location: {},
                 // location: new google.maps.LatLng(centerPoint),
-                radius: "500",
-                type: ["restaurant"],
+                radius: "500", //TODO do a proper calc here
+                type: ["cafe"],
             };
 
             console.log(event.latLng.lat());
@@ -107,6 +109,9 @@
                 console.log(status);
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
                     console.log(results);
+                    // add to store
+                    SearchResultsStore.update(() => results);
+
                     //  for (var i = 0; i < results.length; i++) {
                     // createMarker(results[i]);
                 }
@@ -120,9 +125,11 @@
 </script>
 
 <div class="full-screen" bind:this={container} />
+<CafeList />
 
 <style>
     .full-screen {
+        position: absolute;
         width: 100vw;
         height: 100vh;
     }
