@@ -1,22 +1,24 @@
 <script>
+    import { scale, fade } from "svelte/transition";
     import { SearchResultsStore } from "../Stores/SearchResults";
 </script>
 
-<div class="map-container">
+<div in:fade={{ duration: 100 }} class="results-container">
     <h2>Available Cafes</h2>
     <ul>
         {#each $SearchResultsStore as cafe (cafe.place_id)}
-            <li>{cafe.name} - {cafe.vicinity}</li>
+            <li in:scale out:scale>{cafe.name} - {cafe.vicinity}</li>
         {/each}
     </ul>
 </div>
 
 <style>
-    .map-container {
+    .results-container {
         position: absolute;
         z-index: 100;
         bottom: 10px;
         left: 10px;
+        padding: 0 13px;
         width: 400px;
         height: 600px;
         background-color: #c0c0c0c0;
