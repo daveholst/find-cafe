@@ -1,6 +1,6 @@
-<script>
-    import { scale, fade } from "svelte/transition";
-    import { SearchResultsStore } from "../Stores/SearchResults";
+<script lang="ts">
+    import { scale, fade } from "svelte/transition"
+    import { SearchResultsStore } from "../Stores/SearchResults"
 </script>
 
 <div in:fade={{ duration: 100 }} class="results-container">

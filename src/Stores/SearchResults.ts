@@ -1,5 +1,4 @@
-import { writable } from 'svelte/store';
+import { Writable, writable } from "svelte/store"
+// import type { CustomResultsMarker } from "../utils/CutomResultsMarker"
 
-export const SearchResultsStore = writable([
-
-])
+export const SearchResultsStore = writable([])
