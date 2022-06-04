@@ -11,6 +11,7 @@
         haversineDistance,
     } from "../utils"
     import { drawCircle } from "../utils/googleMaps"
+    import { averageDistance } from "../utils/averageDistance"
 
     let container
     let map: google.maps.Map
@@ -35,26 +36,7 @@
         center: wan,
         radius: 500,
     })
-    //This has to exist here otherwise google is undefined
-    export class CustomResultsMarker extends google.maps.Marker {
-        public averageDistance: number
-        setAverageDistance(friendsArray: Coordinate[]) {
-            const markerLocation: Coordinate = {
-                lat: this.getPosition().lat(),
-                lng: this.getPosition().lng(),
-            }
-            // build distance to each friend
-            const distances = friendsArray.map((friendLocation) =>
-                haversineDistance(markerLocation, friendLocation)
-            )
 
-            this.averageDistance =
-                distances.reduce((a, b) => a + b, 0) / distances.length
-        }
-        getAverageDistance() {
-            return this.averageDistance
-        }
-    }
     // adding friends to map
     function addMarker(
         location: google.maps.LatLng,
@@ -62,7 +44,7 @@
     ): void {
         // Add the marker at the clicked location, and add the next-available label
         // from the array of alphabetical characters.
-        new CustomResultsMarker({
+        new google.maps.Marker({
             position: location,
             label: labels[labelIndex++ % labels.length],
             map: map,
@@ -93,6 +75,7 @@
                 type: ["cafe"],
             }
             addMarker(event.latLng, map)
+            // TODO woof! refactor this!
             const calculatedCenter = await getCenter(friendsArray)
             cafeRequest.location = calculatedCenter
             const calculatedRadius = getRadius(calculatedCenter, friendsArray)
@@ -115,17 +98,18 @@
     SearchResultsStore.subscribe((results) => {
         results.forEach((result) => {
             const resultLocation = result.geometry.location
-            const marker = new CustomResultsMarker({
+            const marker = new google.maps.Marker({
                 position: resultLocation,
                 animation: google.maps.Animation.DROP,
                 label: "",
                 map: map,
             })
-            marker.setAverageDistance(friendsArray)
-            const distanceKm = Math.floor(
-                marker.averageDistance / 1000
-            ).toString()
-            marker.setLabel(distanceKm)
+            marker.setLabel(
+                averageDistance({
+                    from: marker,
+                    to: friendsArray,
+                }).toFixed(1)
+            )
             // setMarkerColor(marker, friendsArray)
             SearchMarkersStore.update((current) => [...current, marker])
         })

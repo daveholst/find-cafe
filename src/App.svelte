@@ -1,6 +1,6 @@
 <script lang="ts">
     import Map from "./Components/Map.svelte"
-    export let ready
+    export let ready: boolean
     import { googleMapsApiKey } from "../config.local"
 
     const googleScriptSrc = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initMap&libraries=places,geometry`
