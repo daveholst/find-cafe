@@ -11,15 +11,9 @@
         drawCircle,
         addMarker,
     } from "../utils"
-    import { draw } from "svelte/transition"
 
     let container
     let map: google.maps.Map
-
-    // let wan = { lat: -31.9118, lng: 115.8126 }
-
-    const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    let labelIndex = 0
 
     let friendsArray = []
 
@@ -76,7 +70,9 @@
                     if (status === google.maps.places.PlacesServiceStatus.OK) {
                         console.log(results)
                         // add to store
-                        SearchResultsStore.update(() => results)
+                        SearchResultsStore.update(() =>
+                            results.map((r) => ({ result: r }))
+                        )
                     }
                 })
             }
@@ -84,22 +80,23 @@
     })
 
     // when results goto the store, drop pins
-    SearchResultsStore.subscribe((results) => {
-        results.map((result) => {
-            const resultLocation = result.geometry.location
+    SearchResultsStore.subscribe((cafes) => {
+        cafes.map((cafe) => {
+            const resultLocation = cafe.result.geometry.location
             const marker = new google.maps.Marker({
                 position: resultLocation,
                 animation: google.maps.Animation.DROP,
-                label: "",
                 map: map,
             })
-            marker.setLabel(
+            // TODO get this into the above, it's a bit haky
+            const avgDistance =
                 averageDistance({
                     from: marker,
                     to: friendsArray,
-                }).toFixed(1)
-            )
-            // setMarkerColor(marker, friendsArray)
+                }).toFixed(1) || undefined
+
+            marker.setLabel(avgDistance)
+
             SearchMarkersStore.update((current) => [...current, marker])
         })
     })
