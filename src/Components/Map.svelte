@@ -5,27 +5,25 @@
     import { SearchResultsStore } from "../Stores/SearchResults"
     import { SearchMarkersStore } from "../Stores/SearchMarkers"
     import {
-        Coordinate,
         getCenter,
         getRadius,
-        haversineDistance,
+        averageDistance,
+        drawCircle,
+        addMarker,
     } from "../utils"
-    import { drawCircle } from "../utils/googleMaps"
-    import { averageDistance } from "../utils/averageDistance"
+    import { draw } from "svelte/transition"
 
     let container
     let map: google.maps.Map
 
-    let zoom = 13
-    let center = { lat: -31.9523, lng: 115.8613 }
-    let wan = { lat: -31.9118, lng: 115.8126 }
+    // let wan = { lat: -31.9118, lng: 115.8126 }
 
     const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     let labelIndex = 0
 
     let friendsArray = []
 
-    let service
+    let service: google.maps.places.PlacesService
 
     let searchCircle = new google.maps.Circle({
         strokeColor: "#FF0000",
@@ -33,30 +31,19 @@
         strokeWeight: 2,
         fillColor: "#FF0000",
         fillOpacity: 0.35,
-        center: wan,
+        // center: wan,
         radius: 500,
     })
 
     // adding friends to map
-    function addMarker(
-        location: google.maps.LatLng,
-        map: google.maps.Map
-    ): void {
-        // Add the marker at the clicked location, and add the next-available label
-        // from the array of alphabetical characters.
-        new google.maps.Marker({
-            position: location,
-            label: labels[labelIndex++ % labels.length],
-            map: map,
-        })
-        friendsArray.push({ lat: location.lat(), lng: location.lng() })
-    }
 
     onMount(async () => {
         // build the map - pretty sure all config has to happen in here
         map = new google.maps.Map(container, {
-            zoom,
-            center,
+            zoom: 13, // initial zoom level
+            // TODO maybe use the loation API to propogate this??
+            center: { lat: -31.9523, lng: 115.8613 }, // Perth CBD
+            disableDefaultUI: true,
             //   styles: mapStyles, // optional
         })
         // cerate place lookup
@@ -69,34 +56,36 @@
             // remove the previous searches markers
             $SearchMarkersStore.map((marker) => marker.setMap(null))
 
-            let cafeRequest = {
-                location: {},
-                radius: "500", // meters
-                type: ["cafe"],
-            }
-            addMarker(event.latLng, map)
-            // TODO woof! refactor this!
-            const calculatedCenter = await getCenter(friendsArray)
-            cafeRequest.location = calculatedCenter
-            const calculatedRadius = getRadius(calculatedCenter, friendsArray)
-            cafeRequest.radius = calculatedRadius.toString()
+            // add marker to map and add to friends array
+            friendsArray.push(addMarker(event.latLng, map))
+
+            // draw/update circle
             drawCircle(friendsArray, searchCircle, map)
+
+            const searchCenterPoint = getCenter(friendsArray)
+            const cafeRequest: google.maps.places.PlaceSearchRequest = {
+                location: searchCenterPoint,
+                radius: getRadius(searchCenterPoint, friendsArray) || 500, // meters
+                type: "cafe",
+            }
             // Search logic
             //TODO abstract this out
-            service.nearbySearch(cafeRequest, (results, status) => {
-                console.log(status)
-                if (status === google.maps.places.PlacesServiceStatus.OK) {
-                    console.log(results)
-                    // add to store
-                    SearchResultsStore.update(() => results)
-                }
-            })
+            if (friendsArray.length > 1) {
+                service.nearbySearch(cafeRequest, (results, status) => {
+                    console.log(status)
+                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                        console.log(results)
+                        // add to store
+                        SearchResultsStore.update(() => results)
+                    }
+                })
+            }
         })
     })
 
     // when results goto the store, drop pins
     SearchResultsStore.subscribe((results) => {
-        results.forEach((result) => {
+        results.map((result) => {
             const resultLocation = result.geometry.location
             const marker = new google.maps.Marker({
                 position: resultLocation,
