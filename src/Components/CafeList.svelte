@@ -7,7 +7,12 @@
     <h2>Available Cafes</h2>
     <ul>
         {#each $SearchResultsStore as cafe (cafe.googleData.place_id)}
-            <li in:scale out:scale>
+            <li
+                in:scale
+                out:scale
+                class="result-cafe"
+                style={`color: ${cafe.metadata.color.solid};`}
+            >
                 {cafe.metadata.avgDistance} Km - {cafe.googleData.name}
             </li>
         {/each}

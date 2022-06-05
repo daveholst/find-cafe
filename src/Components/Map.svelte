@@ -36,7 +36,7 @@
             SearchResultsStore.set([])
             // add friend marker and push to array
             friendsArray.push(addMarker(event.latLng, map))
-            // draw/update circle
+            // draw/update search radius circle
             drawCircle(friendsArray, searchCircle, map)
             // search for cafes, update store and draw pins
             searchDraw({ friendsArray, searchService, map })

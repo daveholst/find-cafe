@@ -1,4 +1,5 @@
 import { Writable, writable } from "svelte/store"
+import type { RandomColor } from "../utils/randomColor"
 // import type { CustomResultsMarker } from "../utils/CutomResultsMarker"
 
 export interface SearchResults {
@@ -9,6 +10,7 @@ export interface SearchResults {
     metadata?: {
         /** Average distance to all friends in Km  */
         avgDistance?: string
+        color?: RandomColor
     }
 }
 

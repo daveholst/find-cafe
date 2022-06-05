@@ -6,6 +6,7 @@ import {
     getRadius,
     pinSymbol,
 } from "../utils"
+import { randomColor } from "../utils/randomColor"
 
 interface searchDrawOptions {
     /** Array of friends to search between */
@@ -39,10 +40,9 @@ export function searchDraw({
             SearchResultsStore.update(() =>
                 results.map((cafe) => {
                     const cafeLocation = cafe.geometry.location
+                    const rndColor = randomColor({ opacity: 40 })
                     const marker = new google.maps.Marker({
-                        // optimized: false, // stops the marker from flashing
-                        // draggable: true, // stops the marker from flashing
-                        icon: pinSymbol("pink"),
+                        icon: pinSymbol(rndColor.solid),
                         position: cafeLocation,
                         animation: google.maps.Animation.DROP,
                         map: map,
@@ -57,6 +57,7 @@ export function searchDraw({
                         marker,
                         metadata: {
                             avgDistance,
+                            color: rndColor,
                         },
                     }
                 })
