@@ -6,8 +6,10 @@
 <div in:fade={{ duration: 100 }} class="results-container">
     <h2>Available Cafes</h2>
     <ul>
-        {#each $SearchResultsStore as cafe (cafe.place_id)}
-            <li in:scale out:scale>{cafe.name} - {cafe.vicinity}</li>
+        {#each $SearchResultsStore as cafe (cafe.googleData.place_id)}
+            <li in:scale out:scale>
+                {cafe.metadata.avgDistance} Km - {cafe.googleData.name}
+            </li>
         {/each}
     </ul>
 </div>
