@@ -10,8 +10,8 @@
             <li
                 in:scale
                 out:scale
-                class="result-cafe"
-                style={`color: ${cafe.metadata.color.solid};`}
+                style="--random-solid:{cafe.metadata.color
+                    .solid};--random-trans:{cafe.metadata.color.transparent}"
             >
                 {cafe.metadata.avgDistance} Km - {cafe.googleData.name}
             </li>
@@ -30,5 +30,15 @@
         height: 600px;
         background-color: #c0c0c0c0;
         border-radius: 20px;
+    }
+    .results-container > ul {
+        padding-left: 0;
+    }
+    .results-container > ul > li {
+        margin: 3px 0px;
+        list-style-type: none;
+        border: 1px solid var(--random-solid);
+        background-color: var(--random-trans);
+        border-radius: 1px;
     }
 </style>
