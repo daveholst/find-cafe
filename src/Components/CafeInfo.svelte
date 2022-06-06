@@ -5,6 +5,7 @@
     import { SearchResultsStore } from "../Stores/SearchResults"
     import { matchResult } from "../utils"
     import { get } from "svelte/store"
+    import { now } from "svelte/internal"
     let display: boolean
     // export let cafeInfo: SearchResult
 
@@ -19,9 +20,10 @@
             display = false
         }
     })
+    console.log("cafe info", selectedCafeInfo)
 </script>
 
-{#if display}
+{#if display && selectedCafeInfo}
     <div
         class="info-container"
         style="--display:{display};--border-color:{selectedCafeInfo?.metadata
@@ -37,7 +39,7 @@
                     : ""}
             </h2>
             <p>
-                Currently {selectedCafeInfo?.googleData?.opening_hours.isOpen()
+                Currently {selectedCafeInfo?.googleData.opening_hours.open_now
                     ? "Open"
                     : "Closed"}
             </p>
