@@ -27,6 +27,8 @@
             zoom: 13, // initial zoom level
             center: { lat: -31.9523, lng: 115.8613 }, // Perth CBD
             disableDefaultUI: true,
+            clickableIcons: false,
+            minZoom: 3,
         })
 
         // cerate place lookup

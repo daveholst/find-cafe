@@ -14,7 +14,7 @@ An incomplete tool for finding cafes in a given radius from an Array of friends 
 - [ ] Centre on location from native location webAPI
 - [ ] Either have an array of 'good' colors or detect bad contrast colors.
 - [ ] Edit / Save (localstorage) friends
-- [ ] :bug: Stop clicks that arent pin drops :shrug:
+- [x] :bug: Stop clicks that arent pin drops :shrug:
 - [ ] Signify a selected pin - maybe a different outline colour
 - [ ] Add some more/better info to the infoCard
 - [ ] Make the results list clickable / selectable. Delete some maybe? :shrug:
