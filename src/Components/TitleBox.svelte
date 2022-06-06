@@ -30,7 +30,7 @@
 </script>
 
 <div class="header">
-    <h1>🧙‍♀️which-cafe</h1>
+    <h1>🧙‍♀️which-cafe?</h1>
     <!-- this is a tad hacky... it just watches for the car to change
     and deletes and adds the component to the dock, trigger the animation -->
     {#key flipper}

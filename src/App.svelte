@@ -9,6 +9,7 @@
 <svelte:head>
     <script defer async src={googleScriptSrc}>
     </script>
+    <title>which-cafe?</title>
 </svelte:head>
 
 {#if ready}

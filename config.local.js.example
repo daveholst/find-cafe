@@ -1,0 +1,3 @@
+module.exports = {
+    googleMapsApiKey : 'key_in_here'
+}
