@@ -7,7 +7,6 @@ export function getCenter(points: Coordinate[]): Coordinate {
     let sumX = 0
     let sumY = 0
     for (let i = 0; i < points.length; i++) {
-        console.log("pointss", points[i])
         const { lat, lng } = points[i]
         sumX += lat
         sumY += lng

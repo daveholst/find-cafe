@@ -14,7 +14,6 @@
             // display the container
             const cafeResultsList = get(SearchResultsStore)
             selectedCafeInfo = matchResult(location, cafeResultsList)
-            console.log("Got a Match", selectedCafeInfo)
             display = true
         } else {
             display = false

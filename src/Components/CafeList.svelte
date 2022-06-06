@@ -1,11 +1,10 @@
 <script lang="ts">
-    import { scale, fade } from "svelte/transition"
+    import { fade } from "svelte/transition"
     import { SearchResultsStore } from "../Stores/SearchResults"
     let display: boolean
 
     SearchResultsStore.subscribe((results) => {
         display = results.length > 0
-        console.log("DISPLAY:: ", display)
     })
 </script>
 
@@ -28,7 +27,6 @@
 
 <style>
     .results-container {
-        /* display: var(--results-display); */
         position: absolute;
         z-index: 100;
         bottom: 10px;

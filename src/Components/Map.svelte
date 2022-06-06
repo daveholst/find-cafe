@@ -2,27 +2,26 @@
     //   import mapStyles from "./map-styles"; // optional
     import { onMount } from "svelte"
     import CafeList from "./CafeList.svelte"
-    import { SearchResult, SearchResultsStore } from "../Stores/SearchResults"
-    import { drawCircle, addMarker, Coordinate } from "../utils"
+    import { SearchResultsStore } from "../Stores/SearchResults"
+    import { drawCircle, addMarker } from "../utils"
     import { get } from "svelte/store"
     import { searchDraw } from "../handlers/searchDraw"
     import CafeInfo from "./CafeInfo.svelte"
+    import TitleBox from "./TitleBox.svelte"
+    import { FriendsArrayStore } from "../Stores/FriendsArray"
 
     // adding friends to map
     let container
-    let displayInfo: "block" | "none" = "block"
-    let selectedCafeInfo: SearchResult
+    let searchCircle = new google.maps.Circle({
+        strokeColor: "#FF0000",
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: "#FF0000",
+        fillOpacity: 0.35,
+        radius: 500,
+    })
 
     onMount(async () => {
-        let searchCircle = new google.maps.Circle({
-            strokeColor: "#FF0000",
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: "#FF0000",
-            fillOpacity: 0.35,
-            radius: 500,
-        })
-        const friendsArray: Coordinate[] = []
         // build the map
         const map = new google.maps.Map(container, {
             zoom: 13, // initial zoom level
@@ -39,7 +38,12 @@
             get(SearchResultsStore).map((cafe) => cafe.marker.setMap(null))
             SearchResultsStore.set([])
             // add friend marker and push to array
-            friendsArray.push(addMarker(event.latLng, map))
+            FriendsArrayStore.update((existing) => [
+                ...existing,
+                addMarker(event.latLng, map),
+            ])
+            // get latest copy of the store
+            const friendsArray = get(FriendsArrayStore)
             // draw/update search radius circle
             drawCircle(friendsArray, searchCircle, map)
             // search for cafes, update store and draw pins
@@ -49,8 +53,9 @@
 </script>
 
 <div class="full-screen" bind:this={container} />
+<TitleBox {searchCircle} />
 <CafeList />
-<CafeInfo display={displayInfo} />
+<CafeInfo />
 
 <style>
     .full-screen {
