@@ -38,15 +38,15 @@
                       "$".repeat(selectedCafeInfo?.googleData.price_level)
                     : ""}
             </h2>
-            <p>
-                Currently {selectedCafeInfo?.googleData.opening_hours.open_now
-                    ? "Open"
-                    : "Closed"}
-            </p>
-            <p>{selectedCafeInfo?.googleData.vicinity}</p>
+            <a
+                target="_blank"
+                href={`http://www.google.com/search?q=${selectedCafeInfo.googleData.name}&btnI`}
+                >Let me Google that...
+            </a>
+            <p>{selectedCafeInfo.googleData.vicinity}</p>
             <p>
                 <em>Rating: </em><span
-                    >{selectedCafeInfo?.googleData.rating}</span
+                    >{selectedCafeInfo.googleData.rating}</span
                 >
             </p>
         </div>
