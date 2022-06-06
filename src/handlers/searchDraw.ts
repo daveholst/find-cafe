@@ -1,4 +1,4 @@
-import { SearchResultsStore } from "../Stores/SearchResults"
+import { SearchResult, SearchResultsStore } from "../Stores/SearchResults"
 import {
     averageDistance,
     Coordinate,
@@ -7,6 +7,7 @@ import {
     pinSymbol,
 } from "../utils"
 import { randomColor } from "../utils/randomColor"
+import { SelectedCafeStore } from "../Stores/SelectedCafe"
 
 interface searchDrawOptions {
     /** Array of friends to search between */
@@ -28,6 +29,7 @@ export function searchDraw({
         radius: getRadius(searchCenterPoint, friendsArray) || 500, // meters
         type: "cafe",
     }
+
     if (friendsArray.length <= 1) {
         return
     }
@@ -52,6 +54,16 @@ export function searchDraw({
                             from: marker,
                             to: friendsArray,
                         }).toFixed(1) || undefined
+                    // add the event listener for click events
+
+                    // TODO how can this event by typed?
+                    google.maps.event.addListener(marker, "click", (e) => {
+                        console.log(e)
+                        SelectedCafeStore.set({
+                            lat: e.latLng.lat(),
+                            lng: e.latLng.lng(),
+                        })
+                    })
                     return {
                         googleData: cafe,
                         marker,

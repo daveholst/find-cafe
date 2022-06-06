@@ -1,8 +1,8 @@
-import { Writable, writable } from "svelte/store"
+import { writable } from "svelte/store"
 import type { RandomColor } from "../utils/randomColor"
 // import type { CustomResultsMarker } from "../utils/CutomResultsMarker"
 
-export interface SearchResults {
+export interface SearchResult {
     /** Search result from placesRequest (search) */
     googleData: google.maps.places.PlaceResult
     /** Attached marker objet  */
@@ -14,4 +14,4 @@ export interface SearchResults {
     }
 }
 
-export const SearchResultsStore = writable<SearchResults[]>([])
+export const SearchResultsStore = writable<SearchResult[]>([])

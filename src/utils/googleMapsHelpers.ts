@@ -1,3 +1,4 @@
+import type { SearchResult } from "../Stores/SearchResults"
 import { Coordinate, getCenter, getRadius } from "./geometry"
 
 export function drawCircle(
@@ -23,11 +24,9 @@ export function addMarker(
     location: google.maps.LatLng,
     map: google.maps.Map
 ): Coordinate {
-    // Add the marker at the clicked location, and add the next-available label
-    // from the array of alphabetical characters.
+    // Add the marker at the clicked location
     new google.maps.Marker({
         position: location,
-        // label: labels[labelIndex++ % labels.length],
         map: map,
         icon: pinSymbol(),
     })
@@ -43,4 +42,13 @@ export function pinSymbol(color: string = "blue") {
         strokeWeight: 2,
         scale: 1,
     }
+}
+
+export function matchResult(location: Coordinate, resultList: SearchResult[]) {
+    const { lat, lng } = location
+    return resultList.find(
+        (r) =>
+            r.googleData.geometry.location.lat() === lat &&
+            r.googleData.geometry.location.lng() === lng
+    )
 }

@@ -2,13 +2,17 @@
     //   import mapStyles from "./map-styles"; // optional
     import { onMount } from "svelte"
     import CafeList from "./CafeList.svelte"
-    import { SearchResultsStore } from "../Stores/SearchResults"
+    import { SearchResult, SearchResultsStore } from "../Stores/SearchResults"
     import { drawCircle, addMarker, Coordinate } from "../utils"
     import { get } from "svelte/store"
     import { searchDraw } from "../handlers/searchDraw"
+    import CafeInfo from "./CafeInfo.svelte"
 
     // adding friends to map
     let container
+    let displayInfo: "block" | "none" = "block"
+    let selectedCafeInfo: SearchResult
+
     onMount(async () => {
         let searchCircle = new google.maps.Circle({
             strokeColor: "#FF0000",
@@ -46,6 +50,7 @@
 
 <div class="full-screen" bind:this={container} />
 <CafeList />
+<CafeInfo display={displayInfo} />
 
 <style>
     .full-screen {

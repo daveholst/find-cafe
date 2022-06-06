@@ -6,6 +6,7 @@ interface randomColorOptions {
 export interface RandomColor {
     solid: string
     transparent: string
+    trans90: string
 }
 
 export function randomColor({ opacity = 100 }: randomColorOptions) {
@@ -17,6 +18,7 @@ export function randomColor({ opacity = 100 }: randomColorOptions) {
     return {
         solid: `rgb(${r}, ${g}, ${b})`,
         transparent: `rgba(${r}, ${g}, ${b}, ${a})`,
+        trans90: `rgba(${r}, ${g}, ${b}, ${0.9})`,
     }
 }
 
